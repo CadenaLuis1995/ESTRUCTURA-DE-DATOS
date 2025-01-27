@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+
+class BalanceChecker
+{
+    /// <summary>
+    /// Método para verificar si los paréntesis, llaves y corchetes de una fórmula están balanceados.
+    /// </summary>
+    /// <param name="formula">La fórmula matemática como una cadena.</param>
+    /// <returns>True si está balanceada, de lo contrario False.</returns>
+    public static bool IsBalanced(string formula)
+    {
+        Stack<char> stack = new Stack<char>();
+
+        foreach (char c in formula)
+        {
+            if (c == '(' || c == '{' || c == '[')
+            {
+                stack.Push(c); // Agregar el símbolo de apertura a la pila
+            }
+            else if (c == ')' || c == '}' || c == ']')
+            {
+                if (stack.Count == 0) return false;
+
+                char top = stack.Pop();
+                if (!Matches(top, c)) return false; // Verificar si coincide el símbolo de cierre
+            }
+        }
+
+        return stack.Count == 0; // La pila debe estar vacía si está balanceada
+    }
+
+    /// <summary>
+    /// Método para verificar si dos caracteres coinciden como apertura y cierre.
+    /// </summary>
+    /// <param name="open">Carácter de apertura.</param>
+    /// <param name="close">Carácter de cierre.</param>
+    /// <returns>True si coinciden, de lo contrario False.</returns>
+    private static bool Matches(char open, char close)
+    {
+        return (open == '(' && close == ')') ||
+               (open == '{' && close == '}') ||
+               (open == '[' && close == ']');
+    }
+
+    static void Main(string[] args)
+    {
+        string formula = "{7+(8*5)-[(9-7)+(4+1)]}";
+        Console.WriteLine($"La fórmula \"{formula}\" está balanceada: {IsBalanced(formula)}");
+    }
+}

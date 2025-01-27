@@ -1,0 +1,20 @@
+using System.Collections.Generic;
+
+public class Hanoi
+{
+    public static void SolveHanoi(int n, Stack<int> source, Stack<int> auxiliary, Stack<int> destination)
+    {
+        if (n == 1)
+        {
+            destination.Push(source.Pop());
+            // Aquí podrías imprimir el movimiento para visualizar la solución
+        }
+        else
+        {
+            SolveHanoi(n - 1, source, destination, auxiliary);
+            destination.Push(source.Pop());
+            // Aquí podrías imprimir el movimiento para visualizar la solución
+            SolveHanoi(n - 1, auxiliary, source, destination);
+        }
+    }
+}
