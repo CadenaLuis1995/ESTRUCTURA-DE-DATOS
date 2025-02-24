@@ -1,0 +1,79 @@
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+public class VacunacionCOVID
+{
+    public static void Main(string[] args)
+    {
+        // Generación de datos ficticios
+        HashSet<string> ciudadanos = GenerarCiudadanos(500);
+        HashSet<string> vacunadosPfizer = GenerarCiudadanos(75);
+        HashSet<string> vacunadosAstraZeneca = GenerarCiudadanos(75);
+
+        // Operaciones de conjuntos
+        HashSet<string> noVacunados = new HashSet<string>(ciudadanos);
+        noVacunados.ExceptWith(vacunadosPfizer);
+        noVacunados.ExceptWith(vacunadosAstraZeneca);
+
+        HashSet<string> vacunadosDosDosis = new HashSet<string>(vacunadosPfizer);
+        vacunadosDosDosis.IntersectWith(vacunadosAstraZeneca);
+
+        HashSet<string> soloPfizer = new HashSet<string>(vacunadosPfizer);
+        soloPfizer.ExceptWith(vacunadosAstraZeneca);
+
+        HashSet<string> soloAstraZeneca = new HashSet<string>(vacunadosAstraZeneca);
+        soloAstraZeneca.ExceptWith(vacunadosPfizer);
+
+        // Impresión de resultados
+        Console.WriteLine("Ciudadanos no vacunados:");
+        ImprimirListado(noVacunados);
+
+        Console.WriteLine("\nCiudadanos con dos dosis:");
+        ImprimirListado(vacunadosDosDosis);
+
+        Console.WriteLine("\nCiudadanos solo con Pfizer:");
+        ImprimirListado(soloPfizer);
+
+        Console.WriteLine("\nCiudadanos solo con AstraZeneca:");
+        ImprimirListado(soloAstraZeneca);
+
+        // Generación de reporte PDF (opcional)
+        GenerarReportePDF(noVacunados, vacunadosDosDosis, soloPfizer, soloAstraZeneca);
+    }
+
+    // Métodos auxiliares
+    static HashSet<string> GenerarCiudadanos(int cantidad)
+    {
+        HashSet<string> ciudadanos = new HashSet<string>();
+        for (int i = 1; i <= cantidad; i++)
+        {
+            ciudadanos.Add($"Ciudadano {i}");
+        }
+        return ciudadanos;
+    }
+
+    static void ImprimirListado(HashSet<string> listado)
+    {
+        foreach (string ciudadano in listado)
+        {
+            Console.WriteLine(ciudadano);
+        }
+    }
+
+    static void GenerarReportePDF(HashSet<string> noVacunados, HashSet<string> vacunadosDosDosis, HashSet<string> soloPfizer, HashSet<string> soloAstraZeneca)
+    {
+        Document document = new Document();
+        PdfWriter.GetInstance(document, new FileStream("reporte_vacunacion.pdf", FileMode.Create));
+        document.Open();
+
+        document.Add(new Paragraph("Reporte de Vacunación COVID-19"));
+
+        // ... (Agregar contenido del reporte)
+
+        document.Close();
+    }
+}
